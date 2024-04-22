@@ -19,6 +19,7 @@ public class CreatDB {
         }
     }
 
+    // this method below will not run unless the tables does not exist
     private void createTables() throws SQLException {
 
         stmt.executeUpdate("""
