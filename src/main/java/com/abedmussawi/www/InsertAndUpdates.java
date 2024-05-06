@@ -1,5 +1,6 @@
 package com.abedmussawi.www;
 
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class InsertAndUpdates {
     private Connection conn;
-    private Statement stmt;
+    private static Statement stmt;
 
     public InsertAndUpdates() throws SQLException {
         initializeDatabase();
@@ -50,27 +51,27 @@ public class InsertAndUpdates {
     }
 
     public void updateDepotName() throws SQLException {
-        conn.setAutoCommit(false); // Start transaction control
+        conn.setAutoCommit(false); // For Atomicity
 
-        // Update the depot identifier in the Depot table
+        // Update the depid in the Depot table and it will cascade to Stock
         stmt.executeUpdate("UPDATE Depot SET depid = 'dd1' WHERE depid = 'd1';");
-
-        // Optionally, handle other related updates here if necessary
 
         conn.commit(); // Commit the transaction
         System.out.println("Transaction completed successfully.");
 
-        // Clean up resources; ideally should be handled outside or in a separate finally block if this method is part of a larger transaction
-        if (stmt != null) {
-            stmt.close();
-
-        }
-        if (conn != null) {
-            conn.close();
-
-        }
     }
-    public void showResults () throws SQLException {
-        
+    public static void showResults () throws SQLException {
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM Depot");
+        System.out.println("Depot");
+        while (rs.next()) {
+            System.out.println(rs.getString("Depid"));
+        }
+        ResultSet rs1 = stmt.executeQuery("SELECT * FROM Stock");
+        System.out.println("Stock");
+        while (rs1.next()) {
+            System.out.println(rs1.getString("Depid"));
+        }
+
     }
 }
